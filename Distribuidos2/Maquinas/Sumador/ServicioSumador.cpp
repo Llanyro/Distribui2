@@ -15,8 +15,8 @@ void ServicioSumador::resolverSolicitud(const int& newsock_fd) const
 	String resultado;
 	if (peticion.similar("vivo"))
 		resultado = "Yay";
-	else if (peticion.similar("leer"))
-		resultado = FILE_SINGLETON->leerFichero("Hola.txt");
+	else if (peticion.similar("suma"))
+		resultado = (String("") + (size_t)(10 + 20));
 	else
 		resultado = "Invalid request";
 
