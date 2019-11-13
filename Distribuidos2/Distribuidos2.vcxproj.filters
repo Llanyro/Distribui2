@@ -137,5 +137,8 @@
     <ClInclude Include="Maquinas\Sumador\ServicioSumador.h">
       <Filter>Maquinas\Sumador</Filter>
     </ClInclude>
+    <ClInclude Include="Header.txt">
+      <Filter>Archivos de recursos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

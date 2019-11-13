@@ -18,7 +18,7 @@ void ServicioLector::resolverSolicitud(const int& newsock_fd) const
 	else if (peticion.similar("leer"))
 		resultado = FILE_SINGLETON->leerFichero("Hola.txt");
 	else
-		resultado = "Invalid request";
+		resultado = "Invalid request lector";
 
 	send(newsock_fd, &resultado[0], resultado.getCount(), 0);
 	#ifdef _WIN32

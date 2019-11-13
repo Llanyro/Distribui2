@@ -142,6 +142,7 @@
     <ClCompile Include="Maquinas\Sumador\sumador.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Header.txt" />
     <ClInclude Include="Herramientas\File.h" />
     <ClInclude Include="Herramientas\List.h" />
     <ClInclude Include="Herramientas\Singleton.h" />

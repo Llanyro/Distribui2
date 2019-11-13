@@ -18,7 +18,7 @@ void ServicioSumador::resolverSolicitud(const int& newsock_fd) const
 	else if (peticion.similar("suma"))
 		resultado = (String("") + (size_t)(10 + 20));
 	else
-		resultado = "Invalid request";
+		resultado = "Invalid request sumador";
 
 	send(newsock_fd, &resultado[0], resultado.getCount(), 0);
 	#ifdef _WIN32

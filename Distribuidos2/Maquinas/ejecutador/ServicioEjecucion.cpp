@@ -55,7 +55,7 @@ void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 		if (ServicioEjecucion::comprobarServicio("./serv_lector", PUERTOLECTOR))
 		{
 			// Si la peticion al servicio va bien
-			if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOLECTOR, "leer")[0] == EstadoCliente::PeticionSolicitada)
+			if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOLECTOR, peticion)[0] == EstadoCliente::PeticionSolicitada)
 				resultado = CLIENTEEJECUCION->leerRespuesta();
 			// Si la peticion ha devuelto algun error
 			else resultado = "Error internal server lector";
@@ -70,7 +70,7 @@ void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 		if (ServicioEjecucion::comprobarServicio("./serv_sumador", PUERTOSUMADOR))
 		{
 			// Si la peticion al servicio va bien
-			if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOSUMADOR, "sumar").getCount() > 0)
+			if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOSUMADOR, peticion).getCount() > 0)
 				resultado = CLIENTEEJECUCION->leerRespuesta();
 			// Si la peticion ha devuelto algun error
 			else resultado = "Error internal server sumador";
