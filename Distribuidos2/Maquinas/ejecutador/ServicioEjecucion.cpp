@@ -1,9 +1,11 @@
+#pragma warning(disable:4267)
 #include "ServicioEjecucion.h"
 #include "../../Herramientas/socket.h"
 #include "../../Herramientas/List.h"
 #include "../../Herramientas/File.h"
 #include "../../Herramientas/String.h"
-#include "ClienteEjecutador.h"
+#include "ClienteEjecutacion.h"
+#include <cstdlib>
 
 #pragma region Protected
 ServicioEjecucion::ServicioEjecucion() {}
@@ -12,7 +14,7 @@ bool ServicioEjecucion::comprobarServicio(const String& nombre, const unsigned s
 {
 	bool resultado = false;
 	// Hacemos una request vacia al servidor del lector
-	List<EstadoCliente> listClientResult = CLIENTEEJECUCION->enviarSolicitud("localhost", puerto, "vivo");
+	List<EstadoCliente> listClientResult = CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", puerto, "vivo");
 	// Si no devuelve nada
 	if (listClientResult.getCount() == 0)
 		assert(false);
@@ -39,8 +41,8 @@ bool ServicioEjecucion::comprobarServicio(const String& nombre, const unsigned s
 #pragma endregion
 void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 {
+	//Resultado de la peticion
 	String resultado;
-
 	// Leemos la peticion y la guardamos
 	String peticion = FILE_SINGLETON->leerSocket(newsock_fd, '\0');
 	// Guardamos en el log la peticion recibida
@@ -50,10 +52,10 @@ void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 	if (peticion.similar("LeeR"))
 	{
 		// Si el servicio esta OK
-		if (ServicioEjecucion::comprobarServicio("./lector", PUERTOLECTOR))
+		if (ServicioEjecucion::comprobarServicio("./serv_lector", PUERTOLECTOR))
 		{
 			// Si la peticion al servicio va bien
-			if (CLIENTEEJECUCION->enviarSolicitud("localhost", PUERTOLECTOR, "leer")[0] == EstadoCliente::PeticionSolicitada)
+			if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOLECTOR, "leer")[0] == EstadoCliente::PeticionSolicitada)
 				resultado = CLIENTEEJECUCION->leerRespuesta();
 			// Si la peticion ha devuelto algun error
 			else resultado = "Error internal server lector";
@@ -65,10 +67,10 @@ void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 	else if (peticion.similar("SuMa"))
 	{
 		// Si el servicio esta OK
-		if (ServicioEjecucion::comprobarServicio("./sumador", PUERTOSUMADOR))
+		if (ServicioEjecucion::comprobarServicio("./serv_sumador", PUERTOSUMADOR))
 		{
 			// Si la peticion al servicio va bien
-			if (CLIENTEEJECUCION->enviarSolicitud("localhost", PUERTOSUMADOR, "sumar").getCount() > 0)
+			if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOSUMADOR, "sumar").getCount() > 0)
 				resultado = CLIENTEEJECUCION->leerRespuesta();
 			// Si la peticion ha devuelto algun error
 			else resultado = "Error internal server sumador";
@@ -78,7 +80,11 @@ void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 	}
 	else
 		resultado = "Invalid request";
+
+	//Enviamos el resultado
 	send(newsock_fd, &resultado[0], resultado.getCount(), 0);
+
+	//Cerramos el socket
 	#ifdef _WIN32
 	closesocket(newsock_fd);
 	#elif __unix__

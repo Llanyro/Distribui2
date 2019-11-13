@@ -1,0 +1,4 @@
+#pragma once
+#define PUERTOEJECUCION 8080
+#define PUERTOLECTOR 8081
+#define PUERTOSUMADOR 8082

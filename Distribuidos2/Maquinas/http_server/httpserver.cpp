@@ -1,3 +1,4 @@
+#pragma warning(disable:26451)
 #include "httpserver.h"
 #include "tools.h"
 #include "utils.h"
@@ -142,7 +143,7 @@ int httpServer::waitForConnections()
 }
 void httpServer::sendContent(int newsock_fd,char* httpHeader,unsigned long int headerLen, char* content, unsigned long int contentLen)
 {
-    char* msg=new char[headerLen+contentLen+2];
+    char* msg = new char[headerLen+contentLen+2];
     memcpy(msg,httpHeader,headerLen);
     msg[headerLen]='\r';
     msg[headerLen+1]='\n';

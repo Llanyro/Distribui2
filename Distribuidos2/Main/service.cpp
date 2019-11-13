@@ -18,7 +18,7 @@ int main2()
 	//signal(SIGINT, sigClose2);
 	//ECHO_SERVICE;
 	//
-	//List<EstadoServicio> resultado = ECHO_SERVICE->iniciarServicio("ServicioEcho", "logErrorServ.txt", "logServ.txt", "localhost", 8080);
+	//List<EstadoServicio> resultado = ECHO_SERVICE->iniciarServicio("ServicioEcho", "logErrorServ.txt", "logServ.txt", "127.0.0.1", 8080);
 	//bool continuar = false;
 	//
 	//for (size_t i = 0; i < resultado.getCount(); i++)

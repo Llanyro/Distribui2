@@ -127,15 +127,19 @@
     <ClCompile Include="Herramientas\String.cpp" />
     <ClCompile Include="Main\client.cpp" />
     <ClCompile Include="Main\service.cpp" />
-    <ClCompile Include="Maquinas\ejecutador\ClienteEjecutador.cpp" />
+    <ClCompile Include="Maquinas\ejecutador\ClienteEjecutacion.cpp" />
+    <ClCompile Include="Maquinas\ejecutador\ejecutacion.cpp" />
     <ClCompile Include="Maquinas\ejecutador\ServicioEjecucion.cpp" />
     <ClCompile Include="Maquinas\http_server\httpserver.cpp" />
     <ClCompile Include="Maquinas\http_server\main.cpp" />
     <ClCompile Include="Maquinas\http_server\tools.cpp" />
     <ClCompile Include="Maquinas\http_server\utils.cpp" />
+    <ClCompile Include="Maquinas\Lector\lector.cpp" />
     <ClCompile Include="Maquinas\Lector\ServicioLector.cpp" />
     <ClCompile Include="Maquinas\Plantillas\Cliente.cpp" />
     <ClCompile Include="Maquinas\Plantillas\Servicio.cpp" />
+    <ClCompile Include="Maquinas\Sumador\ServicioSumador.cpp" />
+    <ClCompile Include="Maquinas\Sumador\sumador.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Herramientas\File.h" />
@@ -143,7 +147,7 @@
     <ClInclude Include="Herramientas\Singleton.h" />
     <ClInclude Include="Herramientas\socket.h" />
     <ClInclude Include="Herramientas\String.h" />
-    <ClInclude Include="Maquinas\ejecutador\ClienteEjecutador.h" />
+    <ClInclude Include="Maquinas\ejecutador\ClienteEjecutacion.h" />
     <ClInclude Include="Maquinas\ejecutador\ServicioEjecucion.h" />
     <ClInclude Include="Maquinas\http_server\httpserver.h" />
     <ClInclude Include="Maquinas\http_server\tools.h" />
@@ -151,6 +155,8 @@
     <ClInclude Include="Maquinas\Lector\ServicioLector.h" />
     <ClInclude Include="Maquinas\Plantillas\Cliente.h" />
     <ClInclude Include="Maquinas\Plantillas\Servicio.h" />
+    <ClInclude Include="Maquinas\Puertos.h" />
+    <ClInclude Include="Maquinas\Sumador\ServicioSumador.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

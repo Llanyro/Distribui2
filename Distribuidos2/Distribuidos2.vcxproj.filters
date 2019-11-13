@@ -34,6 +34,9 @@
     <Filter Include="Maquinas\Lector">
       <UniqueIdentifier>{9bdd1526-12b8-4502-9208-4caa8bcf0a87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Maquinas\Sumador">
+      <UniqueIdentifier>{0629c2b3-ac93-4c6b-ac23-a2b61eeda862}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Herramientas\File.cpp">
@@ -66,14 +69,26 @@
     <ClCompile Include="Maquinas\http_server\utils.cpp">
       <Filter>Maquinas\http_server</Filter>
     </ClCompile>
-    <ClCompile Include="Maquinas\ejecutador\ClienteEjecutador.cpp">
-      <Filter>Maquinas\Ejecutador</Filter>
-    </ClCompile>
     <ClCompile Include="Maquinas\ejecutador\ServicioEjecucion.cpp">
       <Filter>Maquinas\Ejecutador</Filter>
     </ClCompile>
     <ClCompile Include="Maquinas\Lector\ServicioLector.cpp">
       <Filter>Maquinas\Lector</Filter>
+    </ClCompile>
+    <ClCompile Include="Maquinas\ejecutador\ClienteEjecutacion.cpp">
+      <Filter>Maquinas\Ejecutador</Filter>
+    </ClCompile>
+    <ClCompile Include="Maquinas\Lector\lector.cpp">
+      <Filter>Maquinas\Lector</Filter>
+    </ClCompile>
+    <ClCompile Include="Maquinas\ejecutador\ejecutacion.cpp">
+      <Filter>Maquinas\Ejecutador</Filter>
+    </ClCompile>
+    <ClCompile Include="Maquinas\Sumador\ServicioSumador.cpp">
+      <Filter>Maquinas\Sumador</Filter>
+    </ClCompile>
+    <ClCompile Include="Maquinas\Sumador\sumador.cpp">
+      <Filter>Maquinas\Sumador</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,14 +122,20 @@
     <ClInclude Include="Maquinas\http_server\utils.h">
       <Filter>Maquinas\http_server</Filter>
     </ClInclude>
-    <ClInclude Include="Maquinas\ejecutador\ClienteEjecutador.h">
-      <Filter>Maquinas\Ejecutador</Filter>
-    </ClInclude>
     <ClInclude Include="Maquinas\ejecutador\ServicioEjecucion.h">
       <Filter>Maquinas\Ejecutador</Filter>
     </ClInclude>
     <ClInclude Include="Maquinas\Lector\ServicioLector.h">
       <Filter>Maquinas\Lector</Filter>
+    </ClInclude>
+    <ClInclude Include="Maquinas\ejecutador\ClienteEjecutacion.h">
+      <Filter>Maquinas\Ejecutador</Filter>
+    </ClInclude>
+    <ClInclude Include="Maquinas\Puertos.h">
+      <Filter>Maquinas</Filter>
+    </ClInclude>
+    <ClInclude Include="Maquinas\Sumador\ServicioSumador.h">
+      <Filter>Maquinas\Sumador</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

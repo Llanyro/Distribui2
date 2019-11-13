@@ -1,11 +1,9 @@
 #pragma once
+#include "../Puertos.h"
 #include "../Plantillas/Servicio.h"
 #include "../../Herramientas/Singleton.h"
 
 #define SERVICIOEJECUCION ServicioEjecucion::getInstancia()
-#define PUERTOLECTOR 8081
-#define PUERTOSUMADOR 8082
-
 
 class ServicioEjecucion : public Servicio, public Singleton <ServicioEjecucion>
 {
