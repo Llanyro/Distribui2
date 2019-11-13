@@ -1,0 +1,80 @@
+MySQL client:
+sudo apt install libmysqlclient-dev
+sudo apt install libmysqlcppconn-dev
+
+
+General:
+ssh -i key.pem ubuntu@ipserver
+sudo chmod 400 key.pem
+scp -i key.pem filetocopy ubuntu@3.91.204.17:/pathserver
+ls
+ssh-keygen -t dsa
+cd .shh
+ls
+cat id_rsa.pub >> authorized_keys
+ssh localhost
+
+
+Ejemplo
+ssh -i /home/lubuntu/share/Grupo1.pem ubuntu@3.91.204.17
+exit
+sudo chmod 400 /home/lubuntu/share/Grupo1.pem
+scp -i /home/lubuntu/share/Grupo1.pem /home/lubuntu/share/Grupo1.pem ubuntu@3.91.204.17:/home/ubuntu/
+ssh -i /home/lubuntu/share/Grupo1.pem ubuntu@3.91.204.17
+ls
+ssh-keygen -t dsa
+cd .shh
+ls
+cat id_rsa.pub >> authorized_keys
+ssh localhost
+exit
+cd ..
+nano nanofile.sh
+{
+	IPS="18.212.50.115 54.234.142.150"
+	
+	for I in  $IPS;
+	do
+	scp -i Grupo1.pem -r .ssh/* ubuntu@$I:/home/ubuntu/.ssh/
+	done
+}
+sh ./nanofile.sh
+nano remote.sh
+{
+	IPS="18.212.50.115 54.234.142.150"
+	
+	for I in  $IPS;
+	do
+	ssh $I ls -a /home/ubuntu
+	done
+}
+sh ./remote.sh
+nano intallLibs.sh
+{
+	IPS="18.212.50.115 54.234.142.150"
+	
+	for I in  $IPS;
+	do
+	ssh $I sudo apt-get update	
+	ssh $I sudo apt-get install libopenmpi-dev openmpi-bin gcc g++ cmake make
+	done
+}
+exit
+
+scp -i ~/share/Grupo1.pem -r /home/lubuntu/share/rpcMPI/rpcPreubaMPI/ ubuntu@3.91.204.17:/home/ubuntu
+mkdir bin
+cd bin
+cmake ../rpcPreubaMPI/
+make
+
+
+
+
+
+
+--------------------
+ssh-keygen -t dsa
+cd .shh
+ls
+cat id_dsa.pub >> authorized_keys
+ssh 172.31.84.165
