@@ -18,6 +18,7 @@
 #include <map>
 
 struct st_mysql;
+class String;
 
 /**
  * @brief Clase que implementa un servidor HTTP sencillo
@@ -129,6 +130,7 @@ public:
      * @param file Nombre del fichero pedido. Debe encontrarse en el directorio "html_dir"
      */
     void sendFile(int newsock_fd, const char* file);
+    void sendFile(int newsock_fd, const String& resultadoLeer, const String& resultadoSuma) const;
 
     /**
      * @brief getmimeType Enfunción de la extensión del archivo pedido, se necesita traducir

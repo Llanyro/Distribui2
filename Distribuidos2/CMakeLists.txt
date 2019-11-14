@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(SERVICIOHTTP serv_http)
 set(SERVICIOEJECUCION serv_ejecucion)
 set(SERVICIOLECTOR serv_lector)
 set(SERVICIOSUMADOR serv_sumador)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+project(${SERVICIOHTTP})
+add_executable(${SERVICIOHTTP} "Maquinas/http_server/main.cpp" "Maquinas/http_server/ClienteHttpServer.h" "Herramientas/File.h" "Herramientas/File.cpp" "Maquinas/http_server/ClienteHttpServer.cpp" 
+"Maquinas/http_server/httpserver.h" "Maquinas/http_server/httpserver.cpp" "Maquinas/http_server/tools.h" "Maquinas/http_server/tools.cpp" "Maquinas/http_server/utils.h" 
+"Maquinas/http_server/utils.cpp" "Herramientas/Singleton.h" "Herramientas/List.h" "Herramientas/String.h" "Herramientas/String.cpp" "Maquinas/Plantillas/Cliente.h" "Maquinas/Plantillas/Cliente.cpp"
+"Maquinas/Puertos.h")
+target_link_libraries(${PROJECT_NAME} mysqlcppconn mysqlclient pthread z m rt atomic dl)
 
 project(${SERVICIOEJECUCION})
 add_executable(${SERVICIOEJECUCION}  "Maquinas/ejecutador/ClienteEjecutacion.h" "Maquinas/ejecutador/ClienteEjecutacion.cpp" "Maquinas/ejecutador/ejecutacion.cpp" 

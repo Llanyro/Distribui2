@@ -130,6 +130,7 @@
     <ClCompile Include="Maquinas\ejecutador\ClienteEjecutacion.cpp" />
     <ClCompile Include="Maquinas\ejecutador\ejecutacion.cpp" />
     <ClCompile Include="Maquinas\ejecutador\ServicioEjecucion.cpp" />
+    <ClCompile Include="Maquinas\http_server\ClienteHttpServer.cpp" />
     <ClCompile Include="Maquinas\http_server\httpserver.cpp" />
     <ClCompile Include="Maquinas\http_server\main.cpp" />
     <ClCompile Include="Maquinas\http_server\tools.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Herramientas\String.h" />
     <ClInclude Include="Maquinas\ejecutador\ClienteEjecutacion.h" />
     <ClInclude Include="Maquinas\ejecutador\ServicioEjecucion.h" />
+    <ClInclude Include="Maquinas\http_server\ClienteHttpServer.h" />
     <ClInclude Include="Maquinas\http_server\httpserver.h" />
     <ClInclude Include="Maquinas\http_server\tools.h" />
     <ClInclude Include="Maquinas\http_server\utils.h" />
@@ -158,6 +160,9 @@
     <ClInclude Include="Maquinas\Plantillas\Servicio.h" />
     <ClInclude Include="Maquinas\Puertos.h" />
     <ClInclude Include="Maquinas\Sumador\ServicioSumador.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

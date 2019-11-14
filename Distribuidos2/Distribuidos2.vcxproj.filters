@@ -90,6 +90,9 @@
     <ClCompile Include="Maquinas\Sumador\sumador.cpp">
       <Filter>Maquinas\Sumador</Filter>
     </ClCompile>
+    <ClCompile Include="Maquinas\http_server\ClienteHttpServer.cpp">
+      <Filter>Maquinas\http_server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Herramientas\File.h">
@@ -140,5 +143,13 @@
     <ClInclude Include="Header.txt">
       <Filter>Archivos de recursos</Filter>
     </ClInclude>
+    <ClInclude Include="Maquinas\http_server\ClienteHttpServer.h">
+      <Filter>Maquinas\http_server</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt">
+      <Filter>Archivos de recursos</Filter>
+    </Text>
   </ItemGroup>
 </Project>

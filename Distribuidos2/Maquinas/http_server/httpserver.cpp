@@ -3,6 +3,10 @@
 #include "tools.h"
 #include "utils.h"
 #include <cstring>
+#include "ClienteHttpServer.h"
+#include "..//Puertos.h"
+#include "../../Herramientas/List.h"
+#include "../../Herramientas/String.h"
 
 #ifdef _WIN32
 
@@ -164,6 +168,30 @@ void httpServer::sendFile(int newsock_fd, const char* file)
     createHeader(&httpHeader, &headerLen, "200 OK", &(mimetype[0]), filelen);
     sendContent(newsock_fd, httpHeader, headerLen, fileContent, filelen);
 }
+void httpServer::sendFile(int newsock_fd, const String& resultadoLeer, const String& resultadoSuma) const
+{
+	String cuerpo;
+	if (resultadoLeer.getCount() > 1)
+	{
+		cuerpo += String("Contenido del fichero: ") + resultadoLeer;
+		cuerpo += "<br/>";
+	}
+	if (resultadoSuma.getCount() > 1)
+	{
+		cuerpo += String("Resultado de la suma: ") + resultadoSuma;
+		cuerpo += "<br/>";
+	}
+	String resultadoHtml = "<html><head><title> Tu puta madre.jpg </title></head><body><p>";
+	resultadoHtml += cuerpo + "</p></body></html>";
+
+	char* contenidoCabecera;
+	unsigned long tamanio;
+	createHeader(&contenidoCabecera, &tamanio, "200 OK", "", resultadoHtml.getCount());
+	String cabecera(contenidoCabecera, tamanio);
+	cabecera += resultadoHtml;
+	std::cout << &cabecera[0] << std::endl;
+	send(newsock_fd, &cabecera[0], cabecera.getCount(), 0);
+}
 int httpServer::getHTTPParameter(std::vector<std::vector<std::string*>*> *lines,std::string parameter)
 {
     for(unsigned long int i=0;i<lines->size();i++)
@@ -211,8 +239,26 @@ void httpServer::resolveRequests(int newsock_fd)
                         delete[] user;
                         delete[] pass;
                     }
-                    if(s2->compare("/services.php") == 0)
-                        sendFile(newsock_fd,"/services.html");
+					if (s2->compare("/services.php") == 0)
+					{
+						//Peticion al servidor ejecutror 
+						//Peticion al servidor ejecutror 
+						String resultadoPeticionLeer;
+						String resultadoPeticionSuma;
+						if (false)
+						{
+							List<EstadoCliente> listaSolicitudLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "leer");
+							if (listaSolicitudLeer[0] == EstadoCliente::PeticionSolicitada)
+								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
+						}
+						if (true)
+						{
+							List<EstadoCliente> listaSolicitudSumar = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "suma");
+							if (listaSolicitudSumar[0] == EstadoCliente::PeticionSolicitada)
+								resultadoPeticionSuma = CLIENTEHTTPSERVER->leerRespuesta();
+						}
+						httpServer::sendFile(newsock_fd, resultadoPeticionLeer, resultadoPeticionSuma);
+					}
                     if(s2->compare("/error.php") == 0)
                         sendFile(newsock_fd,"/index.html");
                }
