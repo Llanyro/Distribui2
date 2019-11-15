@@ -10,4 +10,6 @@ class ClienteHttpServer : public Cliente, public Singleton <ClienteHttpServer>
 		ClienteHttpServer();
 		~ClienteHttpServer();
 		friend class Singleton <ClienteHttpServer>;
+	public:
+		void cerrarSocket();
 };

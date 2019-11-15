@@ -12,7 +12,7 @@
 #include <unistd.h>
 #endif // _WIN32
 
-#define SUMASEGUNDOS 10
+#define SUMASEGUNDOS 60
 
 using namespace std;
 
@@ -34,7 +34,7 @@ void sigClosePadre(int value)
 }
 void sigSum(int dummy)
 {
-	cout << "Mas 10 segundos" << endl;
+	cout << "Mas 60 segundos" << endl;
 	maxTime += SUMASEGUNDOS;
 }
 int main()
@@ -53,20 +53,20 @@ int main()
 		{
 			switch (resultado[i])
 			{
-			case EstadoServicio::Iniciado:
-			case EstadoServicio::AnteriormenteIniciado:
-				cout << "Ok, Servidor iniciado correctamente." << endl;
-				continuar = true;
-				break;
-			case EstadoServicio::ErrorSocketNoDisponible:
-				cout << "Error:  Socket no disponible." << endl;
-				break;
-			case EstadoServicio::ErrorOnBinding:
-				cout << "Error on Binding." << endl;
-				break;
-			case EstadoServicio::ErrorNoEscuchando:
-				cout << "Error no escuchando puerto." << endl;
-				break;
+				case EstadoServicio::Iniciado:
+				case EstadoServicio::AnteriormenteIniciado:
+					cout << "Ok, Servidor iniciado correctamente." << endl;
+					continuar = true;
+					break;
+				case EstadoServicio::ErrorSocketNoDisponible:
+					cout << "Error:  Socket no disponible." << endl;
+					break;
+				case EstadoServicio::ErrorOnBinding:
+					cout << "Error on Binding." << endl;
+					break;
+				case EstadoServicio::ErrorNoEscuchando:
+					cout << "Error no escuchando puerto." << endl;
+					break;
 			}
 		}
 

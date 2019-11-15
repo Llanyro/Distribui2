@@ -167,6 +167,7 @@ String File::leerSocket(const int& nuevoSocket, const char& finalPeticion) const
 			}
 			else i++;
 		}
+		//assert(peticion.getCount() > 700);
 	}
 
 	// Si salimos del blucle y no hemos llenado el buffer

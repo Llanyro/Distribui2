@@ -243,6 +243,10 @@ void httpServer::resolveRequests(int newsock_fd)
 						String resultadoPeticionSuma;
 						if (true)
 						{
+							List<EstadoCliente> listaSolicitudIniciarLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "iniciar leer");
+							if (listaSolicitudIniciarLeer[0] == EstadoCliente::PeticionSolicitada)
+								CLIENTEHTTPSERVER->cerrarSocket();
+
 							List<EstadoCliente> listaSolicitudLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "leer");
 							if (listaSolicitudLeer[0] == EstadoCliente::PeticionSolicitada)
 								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
