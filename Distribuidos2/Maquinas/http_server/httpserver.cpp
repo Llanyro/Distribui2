@@ -7,6 +7,7 @@
 #include "..//Puertos.h"
 #include "../../Herramientas/List.h"
 #include "../../Herramientas/String.h"
+#include "../../Herramientas/File.h"
 
 #ifdef _WIN32
 
@@ -152,7 +153,8 @@ void httpServer::sendContent(int newsock_fd,char* httpHeader,unsigned long int h
     msg[headerLen]='\r';
     msg[headerLen+1]='\n';
     memcpy(&(msg[headerLen]),content,contentLen);
-
+	
+	std::cout << &String(msg, headerLen + contentLen + 2)[0] << std::endl;
     send(newsock_fd, msg,headerLen+contentLen+2,0);
 }
 void httpServer::sendFile(int newsock_fd, const char* file)
@@ -168,7 +170,7 @@ void httpServer::sendFile(int newsock_fd, const char* file)
     createHeader(&httpHeader, &headerLen, "200 OK", &(mimetype[0]), filelen);
     sendContent(newsock_fd, httpHeader, headerLen, fileContent, filelen);
 }
-void httpServer::sendFile(int newsock_fd, const String& resultadoLeer, const String& resultadoSuma) const
+void httpServer::generarResultadoHtml(const String& resultadoLeer, const String& resultadoSuma) const
 {
 	String cuerpo;
 	if (resultadoLeer.getCount() > 1)
@@ -182,15 +184,8 @@ void httpServer::sendFile(int newsock_fd, const String& resultadoLeer, const Str
 		cuerpo += "<br/>";
 	}
 	String resultadoHtml = "<html><head><title> Tu puta madre.jpg </title></head><body><p>";
-	resultadoHtml += cuerpo + "</p></body></html>";
-
-	char* contenidoCabecera;
-	unsigned long tamanio;
-	createHeader(&contenidoCabecera, &tamanio, "200 OK", "", resultadoHtml.getCount());
-	String cabecera(contenidoCabecera, tamanio);
-	cabecera += resultadoHtml;
-	std::cout << &cabecera[0] << std::endl;
-	send(newsock_fd, &cabecera[0], cabecera.getCount(), 0);
+	resultadoHtml += cuerpo + "</p></body></html>\n";
+	FILE_SINGLETON->escribirFichero("/Maquinas/http_server/html_dir/resultados.html", resultadoHtml);
 }
 int httpServer::getHTTPParameter(std::vector<std::vector<std::string*>*> *lines,std::string parameter)
 {
@@ -242,22 +237,24 @@ void httpServer::resolveRequests(int newsock_fd)
 					if (s2->compare("/services.php") == 0)
 					{
 						//Peticion al servidor ejecutror 
-						//Peticion al servidor ejecutror 
+						//Peticion al servidor ejecutror
+
 						String resultadoPeticionLeer;
 						String resultadoPeticionSuma;
-						if (false)
+						if (true)
 						{
 							List<EstadoCliente> listaSolicitudLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "leer");
 							if (listaSolicitudLeer[0] == EstadoCliente::PeticionSolicitada)
 								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
 						}
-						if (true)
+						if (false)
 						{
 							List<EstadoCliente> listaSolicitudSumar = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "suma");
 							if (listaSolicitudSumar[0] == EstadoCliente::PeticionSolicitada)
 								resultadoPeticionSuma = CLIENTEHTTPSERVER->leerRespuesta();
 						}
-						httpServer::sendFile(newsock_fd, resultadoPeticionLeer, resultadoPeticionSuma);
+						httpServer::generarResultadoHtml(resultadoPeticionLeer, resultadoPeticionSuma);
+						sendFile(newsock_fd, "/resultados.html");
 					}
                     if(s2->compare("/error.php") == 0)
                         sendFile(newsock_fd,"/index.html");
@@ -281,6 +278,9 @@ bool httpServer::validatePassword(std::string username, std::string password)
         std::string hash = tool.generarHash(password);
         std::string command = "select * from usuarios where user='" + username + "' and password='" + hash + "';";
 		
+		std::cout << username << std::endl;
+		std::cout << password << std::endl;
+
 		#ifdef _WIN32
 		temp = true;
 		#elif __unix__

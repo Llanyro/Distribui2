@@ -1,0 +1,14 @@
+﻿  utils.cpp
+  lector.cpp
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\http_server\utils.cpp(3,10): error C1083:  No se puede abrir el archivo incluir: 'unistd.h': No such file or directory
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(30,2): error C3861:  'kill': no se encontró el identificador
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(41,8): error C3861:  'fork': no se encontró el identificador
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(46,10): error C2065:  'SIGUSR1': identificador no declarado
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(53,4): error C3861:  'sleep': no se encontró el identificador
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(91,9): error C3861:  'getppid': no se encontró el identificador
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(91,20): error C2065:  'SIGUSR1': identificador no declarado
+  ServicioLector.cpp
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\lector.cpp(91,4): error C3861:  'kill': no se encontró el identificador
+  sumador.cpp
+  Generando código...
+C:\Users\Llany\source\repos\Distribui2\Distribuidos2\Maquinas\Lector\ServicioLector.cpp(23,57): warning C4267:  'argumento': conversión de 'size_t' a 'int'; posible pérdida de datos

@@ -12,7 +12,6 @@ ServicioEjecucion::ServicioEjecucion() {}
 ServicioEjecucion::~ServicioEjecucion() {}
 bool ServicioEjecucion::comprobarServicio(const String& nombre, const unsigned short& puerto) const
 {
-	bool resultado = false;
 	// Hacemos una request vacia al servidor del lector
 	List<EstadoCliente> listClientResult = CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", puerto, "vivo");
 	// Si no devuelve nada
@@ -28,15 +27,18 @@ bool ServicioEjecucion::comprobarServicio(const String& nombre, const unsigned s
 			{
 				// Si el cliente esta apagado lo iniciamos
 				case EstadoCliente::ErrorConexionFallida:
-					system(&nombre[0]);
-				case EstadoCliente::PeticionSolicitada:
-					resultado = true;
-					break;
+					if (fork() == 0)
+						execl("/usr/bin/xterm", "xterm", &nombre[0], NULL);
+					else
+					{
+						sleep(5);
+						system("echo Despierto!");
+					}
 			}
 		}
 	}
 	String basura = CLIENTEEJECUCION->leerRespuesta();
-	return resultado;
+	return true;
 }
 #pragma endregion
 void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const

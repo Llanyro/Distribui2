@@ -130,7 +130,7 @@ public:
      * @param file Nombre del fichero pedido. Debe encontrarse en el directorio "html_dir"
      */
     void sendFile(int newsock_fd, const char* file);
-    void sendFile(int newsock_fd, const String& resultadoLeer, const String& resultadoSuma) const;
+    void generarResultadoHtml(const String& resultadoLeer, const String& resultadoSuma) const;
 
     /**
      * @brief getmimeType Enfunción de la extensión del archivo pedido, se necesita traducir

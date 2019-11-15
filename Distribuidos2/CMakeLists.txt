@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(${SERVICIOHTTP})
-add_executable(${SERVICIOHTTP} "Maquinas/http_server/main.cpp" "Maquinas/http_server/ClienteHttpServer.h" "Herramientas/File.h" "Herramientas/File.cpp" "Maquinas/http_server/ClienteHttpServer.cpp" 
+add_executable(${SERVICIOHTTP} "Maquinas/http_server/main.cpp" "Herramientas/File.h" "Herramientas/File.cpp" "Maquinas/http_server/ClienteHttpServer.h" "Herramientas/File.h" "Herramientas/File.cpp" "Maquinas/http_server/ClienteHttpServer.cpp" 
 "Maquinas/http_server/httpserver.h" "Maquinas/http_server/httpserver.cpp" "Maquinas/http_server/tools.h" "Maquinas/http_server/tools.cpp" "Maquinas/http_server/utils.h" 
 "Maquinas/http_server/utils.cpp" "Herramientas/Singleton.h" "Herramientas/List.h" "Herramientas/String.h" "Herramientas/String.cpp" "Maquinas/Plantillas/Cliente.h" "Maquinas/Plantillas/Cliente.cpp"
 "Maquinas/Puertos.h")

@@ -3,10 +3,21 @@
 #include "../../Herramientas/List.h"
 #include "../../Herramientas/String.h"
 #include <iostream>
-#include <signal.h>
+#include <csignal>
 #include <ctime>
 
+#ifdef _WIN32
+
+#elif __unix__
+#include <unistd.h>
+#endif // _WIN32
+
+#define SUMASEGUNDOS 10
+
 using namespace std;
+
+double maxTime = 0.0;
+int pid = 0;
 
 void sigCloseSumador(int dummy)
 {
@@ -15,46 +26,73 @@ void sigCloseSumador(int dummy)
 	File::freeInstancia();
 	exit(0);
 }
-
+void sigClosePadre(int value)
+{
+	cout << endl << "Matando hijo y me suicido" << endl;
+	kill(pid, SIGINT);
+	exit(0);
+}
+void sigSum(int dummy)
+{
+	maxTime += 60;
+}
 int main()
 {
-	signal(SIGINT, sigCloseSumador);
-	SERVICIOSUMADOR;
-
-	List<EstadoServicio> resultado =
-		SERVICIOSUMADOR->iniciarServicio("Servicio Sumador", "./logs/logErrorSumador.txt", "./logs/logSumador.txt", "127.0.0.1", PUERTOSUMADOR);
-	bool continuar = false;
-	double segundo = clock() / (double)CLOCKS_PER_SEC;
-	double maxTime = segundo + 60;
-
-	for (size_t i = 0; i < resultado.getCount(); i++)
+	pid = fork();
+	if (pid != 0)
 	{
-		switch (resultado[i])
+		cout << "Padre sumador" << endl;
+		signal(SIGINT, sigClosePadre);
+		signal(SIGUSR1, sigSum);
+
+		int segundo = clock() / (int)CLOCKS_PER_SEC;
+		maxTime = segundo + SUMASEGUNDOS;
+		while (segundo <= maxTime)
 		{
-			case EstadoServicio::Iniciado:
-			case EstadoServicio::AnteriormenteIniciado:
-				cout << "Ok, Servidor iniciado correctamente." << endl;
-				continuar = true;
-				break;
-			case EstadoServicio::ErrorSocketNoDisponible:
-				cout << "Error:  Socket no disponible." << endl;
-				break;
-			case EstadoServicio::ErrorOnBinding:
-				cout << "Error on Binding." << endl;
-				break;
-			case EstadoServicio::ErrorNoEscuchando:
-				cout << "Error no escuchando puerto." << endl;
-				break;
+			sleep(1);
+			cout << (maxTime - segundo) << endl;
+			segundo = clock() / (int)CLOCKS_PER_SEC;
 		}
+		sigClosePadre(0);
 	}
-	
-	while (continuar && segundo <= maxTime)
+	else
 	{
-		int newfd = SERVICIOSUMADOR->escharSolicitudes();
-		SERVICIOSUMADOR->resolverSolicitud(newfd);
-		segundo = clock() / (double)CLOCKS_PER_SEC;
-	}
+		cout << "Hijo sumador" << endl;
+		signal(SIGINT, sigCloseSumador);
+		SERVICIOSUMADOR;
 
-	sigCloseSumador(0);
+		List<EstadoServicio> resultado =
+			SERVICIOSUMADOR->iniciarServicio("Servicio Sumador", "./logs/logErrorSumador.txt", "./logs/logSumador.txt", "127.0.0.1", PUERTOSUMADOR);
+		bool continuar = false;
+
+		for (size_t i = 0; i < resultado.getCount(); i++)
+		{
+			switch (resultado[i])
+			{
+				case EstadoServicio::Iniciado:
+				case EstadoServicio::AnteriormenteIniciado:
+					cout << "Ok, Servidor iniciado correctamente." << endl;
+					continuar = true;
+					break;
+				case EstadoServicio::ErrorSocketNoDisponible:
+					cout << "Error:  Socket no disponible." << endl;
+					break;
+				case EstadoServicio::ErrorOnBinding:
+					cout << "Error on Binding." << endl;
+					break;
+				case EstadoServicio::ErrorNoEscuchando:
+					cout << "Error no escuchando puerto." << endl;
+					break;
+			}
+		}
+
+		while (continuar)
+		{
+			int newfd = SERVICIOSUMADOR->escharSolicitudes();
+			kill(getppid(), SIGUSR1);
+			SERVICIOSUMADOR->resolverSolicitud(newfd);
+		}
+		sigCloseSumador(0);
+	}
 	return 0;
 }

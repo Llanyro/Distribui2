@@ -6,9 +6,18 @@
 #include <csignal>
 #include <ctime>
 
+#ifdef _WIN32
+
+#elif __unix__
+#include <unistd.h>
+#endif // _WIN32
+
+#define SUMASEGUNDOS 10
+
 using namespace std;
 
 double maxTime = 0.0;
+int pid = 0;
 
 void sigCloseLector(int dummy)
 {
@@ -17,33 +26,23 @@ void sigCloseLector(int dummy)
 	File::freeInstancia();
 	exit(0);
 }
-
 void sigClosePadre(int value)
 {
-	cout << "Yo no me muero" << endl;
+	cout << endl << "Matando hijo y me suicido" << endl;
+	kill(pid, SIGINT);
+	exit(0);
 }
 void sigSum(int dummy)
 {
-	maxTime += 60;
+	cout << "Mas 10 segundos" << endl;
+	maxTime += SUMASEGUNDOS;
 }
-
 int main()
 {
-	int pid = fork();
-	if (pid != 0)
+	pid = fork();
+	if (pid == 0)
 	{
-		signal(SIGINT, sigClosePadre);
-		signal(SIGUSR1, sigSum);
-
-		double segundo = clock() / (double)CLOCKS_PER_SEC;
-		maxTime = segundo + 60;
-		while (segundo <= maxTime)
-			sleep(1);
-		kill(pid, SIGINT);
-		sigClosePadre(0);
-	}
-	else
-	{
+		cout << "Hijo lector" << endl;
 		signal(SIGINT, sigCloseLector);
 		SERVICIOLECTOR;
 		List<EstadoServicio> resultado =
@@ -54,20 +53,20 @@ int main()
 		{
 			switch (resultado[i])
 			{
-				case EstadoServicio::Iniciado:
-				case EstadoServicio::AnteriormenteIniciado:
-					cout << "Ok, Servidor iniciado correctamente." << endl;
-					continuar = true;
-					break;
-				case EstadoServicio::ErrorSocketNoDisponible:
-					cout << "Error:  Socket no disponible." << endl;
-					break;
-				case EstadoServicio::ErrorOnBinding:
-					cout << "Error on Binding." << endl;
-					break;
-				case EstadoServicio::ErrorNoEscuchando:
-					cout << "Error no escuchando puerto." << endl;
-					break;
+			case EstadoServicio::Iniciado:
+			case EstadoServicio::AnteriormenteIniciado:
+				cout << "Ok, Servidor iniciado correctamente." << endl;
+				continuar = true;
+				break;
+			case EstadoServicio::ErrorSocketNoDisponible:
+				cout << "Error:  Socket no disponible." << endl;
+				break;
+			case EstadoServicio::ErrorOnBinding:
+				cout << "Error on Binding." << endl;
+				break;
+			case EstadoServicio::ErrorNoEscuchando:
+				cout << "Error no escuchando puerto." << endl;
+				break;
 			}
 		}
 
@@ -75,10 +74,21 @@ int main()
 		{
 			int newfd = SERVICIOLECTOR->escharSolicitudes();
 			kill(getppid(), SIGUSR1);
-			//Señal al padre + 60 seg
 			SERVICIOLECTOR->resolverSolicitud(newfd);
 		}
 		sigCloseLector(0);
+	}
+	else
+	{
+		cout << "Padre lector" << endl;
+		signal(SIGINT, sigClosePadre);
+		signal(SIGUSR1, sigSum);
+
+		int segundo = clock() / (int)CLOCKS_PER_SEC;
+		maxTime = segundo + SUMASEGUNDOS;
+		while (segundo <= maxTime)
+			segundo = clock() / (int)CLOCKS_PER_SEC;
+		sigClosePadre(0);
 	}
 
 	return 0;
