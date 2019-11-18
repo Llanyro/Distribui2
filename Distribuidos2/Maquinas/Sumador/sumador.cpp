@@ -12,7 +12,7 @@
 #include <unistd.h>
 #endif // _WIN32
 
-#define SUMASEGUNDOS 10
+#define SUMASEGUNDOS 30
 
 using namespace std;
 
@@ -28,13 +28,14 @@ void sigCloseSumador(int dummy)
 }
 void sigClosePadre(int value)
 {
-	cout << endl << "Matando hijo y me suicido" << endl;
+	cout << "Mas " << SUMASEGUNDOS << " segundos" << endl;
 	kill(pid, SIGINT);
 	exit(0);
 }
 void sigSum(int dummy)
 {
-	maxTime += 60;
+	cout << "Mas " << SUMASEGUNDOS << " segundos al sumador" << endl;
+	maxTime = (clock() / (int)CLOCKS_PER_SEC) + SUMASEGUNDOS;
 }
 int main()
 {
@@ -50,7 +51,6 @@ int main()
 		while (segundo <= maxTime)
 		{
 			sleep(1);
-			cout << (maxTime - segundo) << endl;
 			segundo = clock() / (int)CLOCKS_PER_SEC;
 		}
 		sigClosePadre(0);

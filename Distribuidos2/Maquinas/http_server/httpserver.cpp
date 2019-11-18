@@ -236,8 +236,11 @@ void httpServer::resolveRequests(int newsock_fd)
                     }
 					if (s2->compare("/services.php") == 0)
 					{
-						//Peticion al servidor ejecutror 
-						//Peticion al servidor ejecutror
+						char* pruebaclase = getFromPost(postLine, "pruebaclase");
+						char* remoteFile = getFromPost(postLine, "remoteFile");
+
+						std::cout << &pruebaclase[0] << std::endl;
+						std::cout << &remoteFile[0] << std::endl;
 
 						String resultadoPeticionLeer;
 						String resultadoPeticionSuma;
@@ -251,12 +254,17 @@ void httpServer::resolveRequests(int newsock_fd)
 							if (listaSolicitudLeer[0] == EstadoCliente::PeticionSolicitada)
 								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
 						}
-						if (false)
+						if (true)
 						{
+							List<EstadoCliente> listaSolicitudIniciarSuma = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "iniciar suma");
+							if (listaSolicitudIniciarSuma[0] == EstadoCliente::PeticionSolicitada)
+								CLIENTEHTTPSERVER->cerrarSocket();
+
 							List<EstadoCliente> listaSolicitudSumar = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "suma");
 							if (listaSolicitudSumar[0] == EstadoCliente::PeticionSolicitada)
-								resultadoPeticionSuma = CLIENTEHTTPSERVER->leerRespuesta();
+								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
 						}
+
 						httpServer::generarResultadoHtml(resultadoPeticionLeer, resultadoPeticionSuma);
 						sendFile(newsock_fd, "/resultados.html");
 					}

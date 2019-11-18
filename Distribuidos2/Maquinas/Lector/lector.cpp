@@ -12,7 +12,7 @@
 #include <unistd.h>
 #endif // _WIN32
 
-#define SUMASEGUNDOS 60
+#define SUMASEGUNDOS 30
 
 using namespace std;
 
@@ -34,13 +34,28 @@ void sigClosePadre(int value)
 }
 void sigSum(int dummy)
 {
-	cout << "Mas 60 segundos" << endl;
-	maxTime += SUMASEGUNDOS;
+	cout << "Mas " << SUMASEGUNDOS << " segundos al lector" << endl;
+	maxTime = (clock() / (int)CLOCKS_PER_SEC) + SUMASEGUNDOS;
 }
 int main()
 {
 	pid = fork();
-	if (pid == 0)
+	if (pid != 0)
+	{
+		cout << "Padre lector" << endl;
+		signal(SIGINT, sigClosePadre);
+		signal(SIGUSR1, sigSum);
+
+		int segundo = clock() / (int)CLOCKS_PER_SEC;
+		maxTime = segundo + SUMASEGUNDOS;
+		while (segundo <= maxTime)
+		{
+			sleep(1);
+			segundo = clock() / (int)CLOCKS_PER_SEC;
+		}
+		sigClosePadre(0);
+	}
+	else
 	{
 		cout << "Hijo lector" << endl;
 		signal(SIGINT, sigCloseLector);
@@ -77,18 +92,6 @@ int main()
 			SERVICIOLECTOR->resolverSolicitud(newfd);
 		}
 		sigCloseLector(0);
-	}
-	else
-	{
-		cout << "Padre lector" << endl;
-		signal(SIGINT, sigClosePadre);
-		signal(SIGUSR1, sigSum);
-
-		int segundo = clock() / (int)CLOCKS_PER_SEC;
-		maxTime = segundo + SUMASEGUNDOS;
-		while (segundo <= maxTime)
-			segundo = clock() / (int)CLOCKS_PER_SEC;
-		sigClosePadre(0);
 	}
 
 	return 0;
