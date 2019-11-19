@@ -10,4 +10,6 @@ class ClienteEjecutacion : public Cliente, public Singleton <ClienteEjecutacion>
 		ClienteEjecutacion();
 		~ClienteEjecutacion();
 		friend class Singleton <ClienteEjecutacion>;
+	public:
+		void cerrarSocket();
 };

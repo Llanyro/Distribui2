@@ -16,7 +16,7 @@ void ServicioLector::resolverSolicitud(const int& newsock_fd) const
 	if (peticion.similar("vivo"))
 		resultado = "Yay";
 	else if (peticion.similar("leer"))
-		resultado = FILE_SINGLETON->leerFichero("Hola.txt");
+		resultado = FILE_SINGLETON->leerFichero("./Hola.txt");
 	else
 		resultado = "Invalid request lector";
 

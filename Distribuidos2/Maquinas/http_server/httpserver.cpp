@@ -1,4 +1,5 @@
 #pragma warning(disable:26451)
+#pragma warning(disable:26812)
 #include "httpserver.h"
 #include "tools.h"
 #include "utils.h"
@@ -153,8 +154,6 @@ void httpServer::sendContent(int newsock_fd,char* httpHeader,unsigned long int h
     msg[headerLen]='\r';
     msg[headerLen+1]='\n';
     memcpy(&(msg[headerLen]),content,contentLen);
-	
-	std::cout << &String(msg, headerLen + contentLen + 2)[0] << std::endl;
     send(newsock_fd, msg,headerLen+contentLen+2,0);
 }
 void httpServer::sendFile(int newsock_fd, const char* file)
@@ -185,7 +184,7 @@ void httpServer::generarResultadoHtml(const String& resultadoLeer, const String&
 	}
 	String resultadoHtml = "<html><head><title> Tu puta madre.jpg </title></head><body><p>";
 	resultadoHtml += cuerpo + "</p></body></html>\n";
-	FILE_SINGLETON->escribirFichero("/Maquinas/http_server/html_dir/resultados.html", resultadoHtml);
+	FILE_SINGLETON->escribirFichero("./Maquinas/http_server/html_dir/resultados.html", resultadoHtml);
 }
 int httpServer::getHTTPParameter(std::vector<std::vector<std::string*>*> *lines,std::string parameter)
 {
@@ -234,7 +233,7 @@ void httpServer::resolveRequests(int newsock_fd)
                         delete[] user;
                         delete[] pass;
                     }
-					if (s2->compare("/services.php") == 0)
+					else if (s2->compare("/services.php") == 0)
 					{
 						char* pruebaclase = getFromPost(postLine, "pruebaclase");
 						char* remoteFile = getFromPost(postLine, "remoteFile");
@@ -244,29 +243,44 @@ void httpServer::resolveRequests(int newsock_fd)
 
 						String resultadoPeticionLeer;
 						String resultadoPeticionSuma;
-						if (true)
+						if (pruebaclase != NULL)
 						{
-							List<EstadoCliente> listaSolicitudIniciarLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "iniciar leer");
+							List<EstadoCliente> listaSolicitudIniciarLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "iniciar_leer");
 							if (listaSolicitudIniciarLeer[0] == EstadoCliente::PeticionSolicitada)
 								CLIENTEHTTPSERVER->cerrarSocket();
+
+							#ifdef _WIN32
+							Sleep(100);
+							#elif __unix__
+							sleep(0.1);
+							#endif // _WIN32
 
 							List<EstadoCliente> listaSolicitudLeer = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "leer");
 							if (listaSolicitudLeer[0] == EstadoCliente::PeticionSolicitada)
 								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
 						}
-						if (true)
+						if (remoteFile != NULL)
 						{
-							List<EstadoCliente> listaSolicitudIniciarSuma = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "iniciar suma");
+							List<EstadoCliente> listaSolicitudIniciarSuma = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "iniciar_suma");
 							if (listaSolicitudIniciarSuma[0] == EstadoCliente::PeticionSolicitada)
 								CLIENTEHTTPSERVER->cerrarSocket();
 
+							#ifdef _WIN32
+							Sleep(100);
+							#elif __unix__
+							sleep(0.1);
+							#endif // _WIN32
+
 							List<EstadoCliente> listaSolicitudSumar = CLIENTEHTTPSERVER->enviarSolicitud("127.0.0.1", PUERTOEJECUCION, "suma");
 							if (listaSolicitudSumar[0] == EstadoCliente::PeticionSolicitada)
-								resultadoPeticionLeer = CLIENTEHTTPSERVER->leerRespuesta();
+								resultadoPeticionSuma = CLIENTEHTTPSERVER->leerRespuesta();
 						}
 
 						httpServer::generarResultadoHtml(resultadoPeticionLeer, resultadoPeticionSuma);
 						sendFile(newsock_fd, "/resultados.html");
+
+						delete[] pruebaclase;
+						delete[] remoteFile;
 					}
                     if(s2->compare("/error.php") == 0)
                         sendFile(newsock_fd,"/index.html");

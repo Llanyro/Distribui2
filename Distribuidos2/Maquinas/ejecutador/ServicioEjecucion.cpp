@@ -20,16 +20,32 @@ void ServicioEjecucion::resolverSolicitud(const int& newsock_fd) const
 	// Guardamos en el log la peticion recibida
 	FILE_SINGLETON->escribirFicheroAlFinal(*this->logGeneral, peticion);
 
-	if (peticion.similar("iniciar leer"))
+	if (peticion.similar("iniciar_leer"))
 	{
-		if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOLECTOR, "vivo")[0] != EstadoCliente::PeticionSolicitada)
-			system("./serv_lector &");
+		EstadoCliente estado = CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOLECTOR, "vivo")[0];
+		switch (estado)
+		{
+			case EstadoCliente::PeticionSolicitada:
+				CLIENTEEJECUCION->cerrarSocket();
+				break;
+			case EstadoCliente::ErrorConexionFallida:
+				system("./serv_lector &");
+				break;
+		}
 		resultado = "OK";
 	}
-	else if (peticion.similar("iniciar suma"))
+	else if (peticion.similar("iniciar_suma"))
 	{
-		if (CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOSUMADOR, "vivo")[0] != EstadoCliente::PeticionSolicitada)
+		EstadoCliente estado = CLIENTEEJECUCION->enviarSolicitud("127.0.0.1", PUERTOSUMADOR, "vivo")[0];
+		switch (estado)
+		{
+		case EstadoCliente::PeticionSolicitada:
+			CLIENTEEJECUCION->cerrarSocket();
+			break;
+		case EstadoCliente::ErrorConexionFallida:
 			system("./serv_sumador &");
+			break;
+		}
 		resultado = "OK";
 	}
 	// Si la peticion es el proceso lector

@@ -1,3 +1,4 @@
+#pragma warning(disable:26451)
 #include "ServicioLector.h"
 #include "../../Herramientas/File.h"
 #include "../../Herramientas/List.h"
@@ -7,7 +8,7 @@
 #include <ctime>
 
 #ifdef _WIN32
-
+#define SIGUSR1 SIGABRT_COMPAT
 #elif __unix__
 #include <unistd.h>
 #endif // _WIN32
@@ -28,8 +29,12 @@ void sigCloseLector(int dummy)
 }
 void sigClosePadre(int value)
 {
-	cout << endl << "Matando hijo y me suicido" << endl;
+	cout << endl << "Matando hijo lector y me suicido" << endl;
+	#ifdef _WIN32
+
+	#elif __unix__
 	kill(pid, SIGINT);
+	#endif // _WIN32
 	exit(0);
 }
 void sigSum(int dummy)
@@ -39,23 +44,12 @@ void sigSum(int dummy)
 }
 int main()
 {
-	pid = fork();
-	if (pid != 0)
-	{
-		cout << "Padre lector" << endl;
-		signal(SIGINT, sigClosePadre);
-		signal(SIGUSR1, sigSum);
+	#ifdef _WIN32
 
-		int segundo = clock() / (int)CLOCKS_PER_SEC;
-		maxTime = segundo + SUMASEGUNDOS;
-		while (segundo <= maxTime)
-		{
-			sleep(1);
-			segundo = clock() / (int)CLOCKS_PER_SEC;
-		}
-		sigClosePadre(0);
-	}
-	else
+	#elif __unix__
+	pid = fork();
+	#endif // _WIN32
+	if (pid == 0)
 	{
 		cout << "Hijo lector" << endl;
 		signal(SIGINT, sigCloseLector);
@@ -88,11 +82,30 @@ int main()
 		while (continuar)
 		{
 			int newfd = SERVICIOLECTOR->escharSolicitudes();
+			#ifdef _WIN32
+
+			#elif __unix__
 			kill(getppid(), SIGUSR1);
+			#endif
 			SERVICIOLECTOR->resolverSolicitud(newfd);
 		}
-		sigCloseLector(0);
-	}
+		#ifdef _WIN32
 
+		#elif __unix__
+		kill(getppid(), SIGINT);
+		#endif
+	}
+	else
+	{
+		cout << "Padre lector" << endl;
+		signal(SIGINT, sigClosePadre);
+		signal(SIGUSR1, sigSum);
+
+		int segundo = clock() / (int)CLOCKS_PER_SEC;
+		maxTime = segundo + SUMASEGUNDOS;
+		while (segundo <= maxTime)
+			segundo = clock() / (int)CLOCKS_PER_SEC;
+		sigClosePadre(0);
+	}
 	return 0;
 }
