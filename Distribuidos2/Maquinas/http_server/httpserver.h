@@ -19,7 +19,11 @@
 
 struct st_mysql;
 class String;
-
+template<class T, class T1>
+class Diccionario;
+template<class T>
+class List;
+class String;
 /**
  * @brief Clase que implementa un servidor HTTP sencillo
  * con soporte para sesión basada en cookies
@@ -55,7 +59,12 @@ private:
      */
     std::map<std::string,std::string> mimeTypes;
 
+	// Servicios disponibles y ip disponibles por servicio
+	// Las ip se pueden repetir por servicios diferentes
+	Diccionario<String, List<String>>* diccionarioIP;
+
 public:
+	void recogerIPServiciosDisponibles() const;
 
     bool isConectedToDataBase() const;
 

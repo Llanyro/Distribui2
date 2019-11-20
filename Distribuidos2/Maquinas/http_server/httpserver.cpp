@@ -9,6 +9,7 @@
 #include "../../Herramientas/List.h"
 #include "../../Herramientas/String.h"
 #include "../../Herramientas/File.h"
+#include "../../Herramientas/Diccionario.h"
 
 #ifdef _WIN32
 
@@ -16,7 +17,38 @@
 #include <mysql/mysql.h>
 #endif // _WIN32
 
+void httpServer::recogerIPServiciosDisponibles() const
+{
+	if (httpServer::isConectedToDataBase())
+	{
+		#ifdef _WIN32
 
+        #elif __unix__
+        String command = "select * from ips_servicios;";
+
+		int qstate = mysql_query(this->serverPointer, &command[0]);
+        if(qstate == 0)
+        {
+            std::cout << "Qstate == 0" << std::endl;
+
+            MYSQL_ROW row;
+            MYSQL_RES* res = nullptr;
+
+            res = mysql_store_result(this->serverPointer);
+            if(res != nullptr)
+            {
+                while((row = mysql_fetch_row(res)) != NULL)
+                {
+                    std::cout << row[0] << std::endl;
+                    std::cout << row[1] << std::endl;
+                }
+            }
+        }
+        else
+            std::cout << "Qstate != 0" << std::endl;
+        #endif // _WIN32
+	}
+}
 bool httpServer::isConectedToDataBase() const
 {
     return (this->serverPointer != nullptr);
@@ -28,6 +60,7 @@ httpServer::httpServer(unsigned short port) : httpServer(port, "/home/lubuntu/sh
 httpServer::httpServer(unsigned short port, std::string path, std::string ipDB, std::string user, std::string pass)
 {
     this->files_path = path + "/html_dir";
+	this->diccionarioIP = new Diccionario<String, List<String>>();
 
 	#ifdef _WIN32
 	this->serverPointer = nullptr;
@@ -36,6 +69,7 @@ httpServer::httpServer(unsigned short port, std::string path, std::string ipDB, 
 	mysql_real_connect(this->serverPointer, &ipDB[0], &user[0], &pass[0], "amazon_base", 3306, nullptr, 0);
 	#endif // _WIN32
 
+	httpServer::recogerIPServiciosDisponibles();
 
     sock_fd = socket(AF_INET, SOCK_STREAM, 0);
      if (sock_fd < 0)
@@ -341,6 +375,8 @@ bool httpServer::validatePassword(std::string username, std::string password)
 }
 void httpServer::closeServer()
 {
+	delete this->diccionarioIP;
+
     #ifdef WIN32
     closesocket(this->sock_fd);
     #else
