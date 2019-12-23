@@ -2,4 +2,7 @@
 # Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
 ################################################################################
 
-*.opendb
+/.vs/Distribuidos2/v16
+/Distribuidos2/.vs
+/Distribuidos2/x64/Debug
+/Distribuidos2/out/build/x64-Debug
