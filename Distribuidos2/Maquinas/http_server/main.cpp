@@ -9,7 +9,6 @@ httpServer* server = nullptr;
 
 void sigClose(int dummy)
 {
-    server->closeServer();
     delete server;
     cout << endl << "Cerrando programa" << endl;
     exit(0);

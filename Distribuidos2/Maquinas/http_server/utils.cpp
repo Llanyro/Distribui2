@@ -101,47 +101,28 @@ void printLines(std::vector<std::vector<std::string*>*>* lines)
     }
 }
 
-httpServer::httpRequest_t getRequestType(std::vector<std::string*>* line)
+httpRequest_t getRequestType(std::vector<std::string*>* line)
 {
-    httpServer::httpRequest_t req=httpServer::GET;
+    httpRequest_t req = httpRequest_t::GET;
     std::string *request=(*line)[0];
 
-    if(!request->compare("GET"))
-        {
-            req=httpServer::GET;
-        }
-    else if(!request->compare("HEAD"))
-        {
-            req=httpServer::HEAD;
-        }
-    else if(!request->compare("POST"))
-        {
-            req=httpServer::POST;
-        }
-    else if(!request->compare("PUT"))
-        {
-            req=httpServer::PUT;
-        }
-    else if(!request->compare("DELETE"))
-        {
-            req=httpServer::DELETE_2;
-        }
-    else if(!request->compare("CONNECT"))
-        {
-            req=httpServer::CONNECT;
-        }
-    else if(!request->compare("OPTIONS"))
-        {
-            req=httpServer::OPTIONS;
-        }
-    else if(!request->compare("TRACE"))
-        {
-            req=httpServer::TRACE;
-        }
-
-
-    return req;
-
+	if (!request->compare("GET"))
+		req = httpRequest_t::GET;
+	else if (!request->compare("HEAD"))
+		req = httpRequest_t::HEAD;
+	else if (!request->compare("POST"))
+		req = httpRequest_t::POST;
+	else if (!request->compare("PUT"))
+		req = httpRequest_t::PUT;
+	else if (!request->compare("DELETE"))
+		req = httpRequest_t::DELETE_2;
+	else if (!request->compare("CONNECT"))
+		req = httpRequest_t::CONNECT;
+	else if (!request->compare("OPTIONS"))
+		req = httpRequest_t::OPTIONS;
+	else if (!request->compare("TRACE"))
+		req = httpRequest_t::TRACE;
+	return req;
 }
 
 

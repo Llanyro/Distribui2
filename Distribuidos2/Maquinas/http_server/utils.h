@@ -12,7 +12,7 @@ void readPostLine(int socket,std::vector<std::string*> *line,int length);
 void deleteLines(std::vector<std::vector<std::string*>*>* lines);
 void printLines(std::vector<std::vector<std::string*>*>* lines);
 
-httpServer::httpRequest_t getRequestType(std::vector<std::string*>* line);
+httpRequest_t getRequestType(std::vector<std::string*>* line);
 
 void createHeader(char** httpHeader, unsigned long int* headerLen,
              const char *responseCode,

@@ -17,6 +17,60 @@
 #include <mysql/mysql.h>
 #endif // _WIN32
 
+#pragma region Constructores
+httpServer::httpServer(unsigned short port) : httpServer(port, "/home/lubuntu/share/http_server", "localhost", "usuario", "Password1")
+{
+
+}
+httpServer::httpServer(unsigned short port, std::string path, std::string ipDB, std::string user, std::string pass)
+{
+    this->files_path = path + "/html_dir";
+	this->diccionarioIP = new Diccionario<String, String>();
+
+	#ifdef _WIN32
+	this->serverPointer = nullptr;
+	#elif __unix__
+	this->serverPointer = mysql_init(nullptr);
+	mysql_real_connect(this->serverPointer, &ipDB[0], &user[0], &pass[0], "amazon_base", 3306, nullptr, 0);
+	#endif // _WIN32
+
+	httpServer::recogerIPServiciosDisponibles();
+
+    sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+     if (sock_fd < 0)
+         std::cout << "Error creating socket" << std::endl;
+    struct sockaddr_in serv_addr;
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_port = htons(port);
+
+    char option = 1;
+    #ifdef WIN32
+    setsockopt(sock_fd,SOL_SOCKET, SO_BROADCAST, &option ,sizeof(option));
+    #else
+    setsockopt(sock_fd,SOL_SOCKET, (SO_REUSEPORT | SO_REUSEADDR), &option,sizeof(option));
+    #endif
+
+    if (bind(sock_fd,(struct sockaddr *) &serv_addr,
+          sizeof(serv_addr)) < 0)
+            std::cout << "ERROR on binding" << std::endl;
+    listen(sock_fd,5);
+
+    buildMimetypeTable();
+}
+httpServer::~httpServer()
+{
+	delete this->diccionarioIP;
+
+    #ifdef WIN32
+    closesocket(this->sock_fd);
+    #else
+    close(this->sock_fd);
+    #endif
+}
+
+#pragma endregion
+
 void httpServer::recogerIPServiciosDisponibles() const
 {
 	if (httpServer::isConectedToDataBase())
@@ -52,46 +106,6 @@ void httpServer::recogerIPServiciosDisponibles() const
 bool httpServer::isConectedToDataBase() const
 {
     return (this->serverPointer != nullptr);
-}
-httpServer::httpServer(unsigned short port) : httpServer(port, "/home/lubuntu/share/http_server", "localhost", "usuario", "Password1")
-{
-
-}
-httpServer::httpServer(unsigned short port, std::string path, std::string ipDB, std::string user, std::string pass)
-{
-    this->files_path = path + "/html_dir";
-	this->diccionarioIP = new Diccionario<String, List<String>>();
-
-	#ifdef _WIN32
-	this->serverPointer = nullptr;
-	#elif __unix__
-	this->serverPointer = mysql_init(nullptr);
-	mysql_real_connect(this->serverPointer, &ipDB[0], &user[0], &pass[0], "amazon_base", 3306, nullptr, 0);
-	#endif // _WIN32
-
-	httpServer::recogerIPServiciosDisponibles();
-
-    sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sock_fd < 0)
-         std::cout << "Error creating socket" << std::endl;
-    struct sockaddr_in serv_addr;
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(port);
-
-    char option = 1;
-    #ifdef WIN32
-    setsockopt(sock_fd,SOL_SOCKET, SO_BROADCAST, &option ,sizeof(option));
-    #else
-    setsockopt(sock_fd,SOL_SOCKET, (SO_REUSEPORT | SO_REUSEADDR), &option,sizeof(option));
-    #endif
-
-    if (bind(sock_fd,(struct sockaddr *) &serv_addr,
-          sizeof(serv_addr)) < 0)
-            std::cout << "ERROR on binding" << std::endl;
-    listen(sock_fd,5);
-
-    buildMimetypeTable();
 }
 std::string httpServer::getmimeType(const char* file)
 {
@@ -372,14 +386,4 @@ bool httpServer::validatePassword(std::string username, std::string password)
     else
         std::cout << "No hay conexion a la DB." << std::endl;
     return temp;
-}
-void httpServer::closeServer()
-{
-	delete this->diccionarioIP;
-
-    #ifdef WIN32
-    closesocket(this->sock_fd);
-    #else
-    close(this->sock_fd);
-    #endif
 }
